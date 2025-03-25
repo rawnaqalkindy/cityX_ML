@@ -2,6 +2,8 @@
 
 # CityX Crime Dashboard
 
+**Important Note: The original dataset has been shrank to 300 entries. This is for deployment puposes, in order to stay within free resources. The file that is responsible for shrinking the dataset is shrink_dataset.py.
+
 This project provides an interactive web UI for exploring crime trends in CityX. It is divided into two main sections:
 - **Level 3: Geo-Spatial Mapping & Basic Web UI** – Visualize crime hotspots on an interactive map.
 - **Level 4: Advanced Web UI & Report Extraction** – Automatically extract and classify police reports from PDF files.
@@ -21,13 +23,7 @@ This project provides an interactive web UI for exploring crime trends in CityX.
 4. run 'docker run -p 8501:8501 cityx-crime-dashboard'
 5. open http://localhost:8501 
 
-# How to Combine and Run - using AWS ( Bonus Part B )
+# How to Combine and Run - using Railway ( Bonus Part B )
 
-
-
-
-# ADDITIONAL NOTES:
- - For level 3:
- - The mapping can be zoomed in and out, showcasing the total amount of crimes in the section, when zoomed out completely all crimes are summed up. 
- - When each pointer is touched by the mouse, it reads oit the catgeory of the crime
- - Each area on the map can be selected to showcase the crimes surrounding the parameter
+1. Ensure railway deployment is running
+2. open https://cityxml-production.up.railway.app
