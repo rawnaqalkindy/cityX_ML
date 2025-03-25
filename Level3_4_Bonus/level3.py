@@ -20,7 +20,7 @@ def severity_to_icon_color(severity):
     }
     return color_map.get(severity, "gray")
 
-def severity_to_color(severity):
+def severity_to_background_color(severity):
     """
     Returns a color for each severity level.
     You can use discrete named colors (e.g., 'red', 'green')
