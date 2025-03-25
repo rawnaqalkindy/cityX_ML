@@ -11,7 +11,7 @@ This project provides an interactive web UI for exploring crime trends in CityX.
 # Setup & Installation
 
 1. Clone the repository or download the project files.
-2. Install dependencies:**
+2. Install dependencies:
    ```bash
    pip install -r requirements.txt
 
@@ -19,9 +19,12 @@ This project provides an interactive web UI for exploring crime trends in CityX.
 
 1. Ensure Docker is installed and running on local 
 2. change directory to cityX_ML/Level3_4_Bonus 
-3. run 'docker build -t cityx-crime-dashboard .'
-4. run 'docker run -p 8501:8501 cityx-crime-dashboard'
-5. open http://localhost:8501 
+3. run:
+ ```bash
+ docker build -t cityx-crime-dashboard .
+ docker run -p 8501:8501 cityx-crime-dashboard
+```
+4. open http://localhost:8501 
 
 # How to Combine and Run - using Railway ( Bonus Part B )
 
