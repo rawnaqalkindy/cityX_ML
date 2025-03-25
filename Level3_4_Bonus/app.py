@@ -58,8 +58,8 @@ elif section == "Level 4: Report Classification":
                     sortable=False
                 )
 
-                gb.configure_column("file", sortable=True)
-                gb.configure_column("report_number", sortable=True)
+                # gb.configure_column("file", sortable=True)
+                # gb.configure_column("report_number", sortable=True)
                 gb.configure_column("predicted_severity", sortable=True)
                 gb.configure_pagination(paginationAutoPageSize=True)
                 gb.configure_side_bar()
