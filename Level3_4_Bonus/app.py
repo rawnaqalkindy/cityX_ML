@@ -28,13 +28,14 @@ elif section == "Level 4: Report Classification":
         if 'detailed_description' in df_reports.columns:
             descriptions = df_reports["detailed_description"].tolist()
             if descriptions:
-                X_police = vectorizer.transform(descriptions) # Inference
+                # Inference
+                X_police = vectorizer.transform(descriptions)
                 pred_indices = model.predict(X_police)
                 pred_categories = label_encoder.inverse_transform(pred_indices)
+
                 df_reports["predicted_category"] = pred_categories
                 df_reports["predicted_severity"] = df_reports["predicted_category"].apply(assign_severity)
-                
-                st.subheader("Predictions for Police Reports")
+
                 df_display = df_reports[[
                     "file", 
                     "report_number", 
@@ -43,14 +44,24 @@ elif section == "Level 4: Report Classification":
                     "predicted_severity"
                 ]].copy()
 
+                # Convert severity to numeric 
                 df_display["predicted_severity"] = pd.to_numeric(
                     df_display["predicted_severity"], errors="coerce"
                 )
+                import pandas as pd
+                pd.set_option('display.max_colwidth', None)
 
-                # Gradient display of severity
-                styled_table = df_display.style.background_gradient(
-                    cmap="YlOrRd",
-                    subset=["predicted_severity"]
+                styled_table = (
+                    df_display.style
+                    .hide_index()
+                    .set_properties(
+                        subset=["detailed_description"], 
+                        **{"white-space": "pre-wrap"}
+                    )
+                    .background_gradient(
+                        cmap="YlOrRd", 
+                        subset=["predicted_severity"]
+                    )
                 )
 
                 st.write(styled_table)
@@ -59,5 +70,3 @@ elif section == "Level 4: Report Classification":
                 st.write("No detailed descriptions found in the extracted reports.")
         else:
             st.write("Extraction did not produce any 'detailed_description' field.")
-
-
