@@ -60,12 +60,39 @@ elif section == "Level 4: Report Classification":
 
                 # gb.configure_column("file", sortable=True)
                 # gb.configure_column("report_number", sortable=True)
-                gb.configure_column("predicted_severity", sortable=True)
+
+
+                 # JS callback for coloring severity
+                severity_color = JsCode("""
+                function(params) {
+                    if (params.value == null) {
+                        return {'backgroundColor': '#ffffff'};
+                    }
+                    switch(params.value) {
+                        case 1:
+                            return {'backgroundColor': '#ffff99'}; // light yellow
+                        case 2:
+                            return {'backgroundColor': '#ffcc66'}; // orange
+                        case 3:
+                            return {'backgroundColor': '#ff9966'}; // dark orange
+                        case 4:
+                            return {'backgroundColor': '#ff6666'}; // red
+                        default:
+                            return {'backgroundColor': '#ffffff'};
+                    }
+                };
+                """)
+
+                # Severity column sortable + colored
+                gb.configure_column(
+                    "predicted_severity",
+                    sortable=True,
+                    cellStyle=severity_color
+                )
                 gb.configure_pagination(paginationAutoPageSize=True)
                 gb.configure_side_bar()
 
                 grid_options = gb.build()
-
 
                 AgGrid(
                     df_display,
