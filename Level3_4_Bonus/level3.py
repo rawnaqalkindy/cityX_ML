@@ -28,76 +28,48 @@ def create_geo_map():
         print("No valid rows. Nothing to display.")
         return "<h3>No valid data for the map.</h3>"
 
-    # Create the base map
     sanfran_map = folium.Map(
         location=[df["latitude (y)"].median(), df["longitude (x)"].median()],
         zoom_start=12,
         tiles="CartoDB positron"
     )
 
-    # Add MiniMap and MeasureControl
+    # MiniMap for context
     sanfran_map.add_child(MiniMap())
+    
+    # MeasureControl tool for distance measuring
     sanfran_map.add_child(MeasureControl())
 
+    # Marker cluster for grouping incidents
+    incidents = MarkerCluster(name="Incidents").add_to(sanfran_map)
     lat_col = "latitude (y)"
     lon_col = "longitude (x)"
-
-
     if "category" in df.columns:
-        categories = df["category"].unique()
-        category_groups = {}
-        for cat in categories:
-
-            group = folium.FeatureGroup(name=f"{cat} Incidents", show=False)
-            marker_cluster = MarkerCluster().add_to(group)
-            category_groups[cat] = marker_cluster
-            sanfran_map.add_child(group)
-        
-
-        for _, row in df.iterrows():
-            lat = row[lat_col]
-            lng = row[lon_col]
-            cat = row["category"]
-            popup_html = f"""
-            <div style="width:150px;">
-              <strong>{cat}</strong><br>
-              Lat: {lat:.4f}<br>
-              Lon: {lng:.4f}
-            </div>
-            """
-            folium.Marker(
-                location=[lat, lng],
-                popup=folium.Popup(popup_html, max_width=200),
-                tooltip=cat,
-                icon=folium.Icon(color="red", icon="info-sign")
-            ).add_to(category_groups[cat])
+        labels = df["category"].tolist()
     else:
+        labels = ["Crime" for _ in range(len(df))]
 
-        group = folium.FeatureGroup(name="Incidents", show=False)
-        marker_cluster = MarkerCluster().add_to(group)
-        sanfran_map.add_child(group)
-        for lat, lng in zip(df[lat_col], df[lon_col]):
-            popup_html = f"""
-            <div style="width:150px;">
-              <strong>Crime</strong><br>
-              Lat: {lat:.4f}<br>
-              Lon: {lng:.4f}
-            </div>
-            """
-            folium.Marker(
-                location=[lat, lng],
-                popup=folium.Popup(popup_html, max_width=200),
-                tooltip="Crime",
-                icon=folium.Icon(color="red", icon="info-sign")
-            ).add_to(marker_cluster)
+    # Created markers 
+    for lat, lng, label in zip(df[lat_col], df[lon_col], labels):
+        popup_html = f"""
+        <div style="width:150px;">
+          <strong>{label}</strong><br>
+          Lat: {lat:.4f}<br>
+          Lon: {lng:.4f}
+        </div>
+        """
+        folium.Marker(
+            location=[lat, lng],
+            popup=folium.Popup(popup_html, max_width=200),
+            tooltip=label,
+            icon=folium.Icon(color="red", icon="info-sign")
+        ).add_to(incidents)
 
-    
+    # HeatMap layer to visualize concentration
     heat_data = [[row[lat_col], row[lon_col]] for _, row in df.iterrows()]
-    heat_group = folium.FeatureGroup(name="Crime Heatmap", show=False)
-    HeatMap(heat_data, radius=15).add_to(heat_group)
-    sanfran_map.add_child(heat_group)
+    HeatMap(heat_data, radius=15, name="Crime Heatmap").add_to(sanfran_map)
 
-
-    folium.LayerControl(collapsed=False).add_to(sanfran_map)
+    # Layer control for toggling map layers
+    folium.LayerControl().add_to(sanfran_map)
 
     return sanfran_map._repr_html_()
