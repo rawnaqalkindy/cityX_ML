@@ -5,3 +5,4 @@ seaborn
 folium
 scikit-learn
 PyPDF2
+streamlit-aggrid
