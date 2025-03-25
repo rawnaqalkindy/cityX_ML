@@ -47,9 +47,19 @@ def create_geo_map():
         labels = ["Crime" for _ in range(len(df))]
 
     for lat, lng, label in zip(df[lat_col], df[lon_col], labels):
+        popup_html = f"""
+        <div style="width:150px;">
+        <strong>{label}</strong><br>
+        Lat: {lat:.4f}<br>
+        Lon: {lng:.4f}
+        </div>
+        """
+
         folium.Marker(
             location=[lat, lng],
-            popup=label
+            popup=folium.Popup(popup_html, max_width=200),
+            tooltip=label,  
+            icon=folium.Icon(color="red", icon="info-sign")
         ).add_to(incidents)
 
     return sanfran_map._repr_html_()
