@@ -3,6 +3,7 @@ import pandas as pd
 from model import load_and_train_model, assign_severity
 import level3
 import level4
+from st_aggrid import AgGrid, GridOptionsBuilder, GridUpdateMode, DataReturnMode
 
 st.set_page_config(page_title="CityX Crime Dashboard", layout="wide")
 st.sidebar.title("CityX Crime Dashboard")
@@ -34,7 +35,6 @@ elif section == "Level 4: Report Classification":
                 df_reports["predicted_category"] = pred_categories
                 df_reports["predicted_severity"] = df_reports["predicted_category"].apply(assign_severity)
                 
-            
                 df_display = df_reports[[
                     "file", 
                     "report_number", 
@@ -43,31 +43,34 @@ elif section == "Level 4: Report Classification":
                     "predicted_severity"
                 ]].copy()
 
-                # Convert severity to numeric
+                # Convert severity to numeric 
                 df_display["predicted_severity"] = pd.to_numeric(
                     df_display["predicted_severity"], errors="coerce"
                 )
 
-      
-                pd.set_option('display.max_colwidth', None)
-
-                styled_table = (
-                    df_display.style
-                    .set_properties(
-                        subset=["detailed_description"],
-                        **{"white-space": "pre-wrap"}  #  multiline text
-                    )
-                    .background_gradient(
-                        cmap="YlOrRd",
-                        subset=["predicted_severity"]
-                    )
+                gb = GridOptionsBuilder.from_dataframe(df_display)
+                gb.configure_pagination(paginationAutoPageSize=True)
+                gb.configure_side_bar()
+                gb.configure_default_column(
+                    editable=False,
+                    wrapText=True,
+                    autoHeight=True
                 )
+       
+                grid_options = gb.build()
 
-                styled_html = styled_table.to_html(index=False)
-                st.write(styled_html, unsafe_allow_html=True)
+       
+                AgGrid(
+                    df_display,
+                    gridOptions=grid_options,
+                    data_return_mode=DataReturnMode.AS_INPUT,
+                    update_mode=GridUpdateMode.MODEL_CHANGED,
+                    fit_columns_on_grid_load=True,
+                    theme="streamlit", 
+                    enable_enterprise_modules=False
+                )
 
             else:
                 st.write("No detailed descriptions found in the extracted reports.")
         else:
             st.write("Extraction did not produce any 'detailed_description' field.")
-
