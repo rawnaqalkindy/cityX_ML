@@ -53,7 +53,6 @@ elif section == "Level 4: Report Classification":
 
                 styled_table = (
                     df_display.style
-                    .hide_index()
                     .set_properties(
                         subset=["detailed_description"],
                         **{"white-space": "pre-wrap"}  #  multiline text
