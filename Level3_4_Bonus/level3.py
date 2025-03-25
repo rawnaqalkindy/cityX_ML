@@ -103,7 +103,6 @@ def create_geo_map():
         loop_button=True,
         date_options='YYYY-MM-DD HH:mm:ss',
         time_slider_drag_update=True,
-        name="Time Slider"
     ).add_to(sanfran_map)
 
     folium.LayerControl().add_to(sanfran_map)
