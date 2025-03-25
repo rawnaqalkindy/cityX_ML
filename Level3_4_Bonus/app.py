@@ -3,7 +3,7 @@ import pandas as pd
 from model import load_and_train_model, assign_severity
 import level3
 import level4
-from st_aggrid import AgGrid, GridOptionsBuilder, GridUpdateMode, DataReturnMode
+from st_aggrid import AgGrid, GridOptionsBuilder, GridUpdateMode, DataReturnMode, JSCode
 
 st.set_page_config(page_title="CityX Crime Dashboard", layout="wide")
 st.sidebar.title("CityX Crime Dashboard")
