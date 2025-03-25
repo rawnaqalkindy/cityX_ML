@@ -9,16 +9,15 @@ from model import assign_severity
 base_path = "/app/"
 csv_path = os.path.join(base_path, "Competition_Dataset.csv")
 
-def severity_to_color(severity):
-    
+def severity_to_icon_color(severity):
     color_map = {
-        1: "#ffffb2", 
-        2: "#fed976",
-        3: "#feb24c",
-        4: "#fd8d3c",
-        5: "#f03b20",  
+        1: "yellow",
+        2: "lightorange",
+        3: "orange",
+        4: "red",
+        5: "darkred"
     }
-    return color_map.get(severity, "#808080")
+    return color_map.get(severity, "gray")
 
 def create_geo_map():
     df = pd.read_csv(csv_path)
@@ -61,17 +60,15 @@ def create_geo_map():
     lon_col = "longitude (x)"
     
     for lat, lng, category in zip(df[lat_col], df[lon_col], labels):
-        sev = assign_severity(category)       
-        color_hex = severity_to_color(sev)     
+        sev = assign_severity(category)
+        icon_color = severity_to_icon_color(sev)
 
-        folium.CircleMarker(
+        popup = folium.Popup(popup_html, max_width=200)
+
+        folium.Marker(
             location=[lat, lng],
-            radius=5,            
-            popup=f"{category} (Severity {sev})" if sev else category,
-            color=color_hex,     
-            fill=True,
-            fill_color=color_hex,
-            fill_opacity=0.8
+            popup=popup,
+            icon=folium.Icon(color=icon_color, icon='info-sign') 
         ).add_to(incidents)
 
     return sanfran_map._repr_html_()
