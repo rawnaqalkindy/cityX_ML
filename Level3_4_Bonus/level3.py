@@ -4,8 +4,26 @@ import pandas as pd
 import folium
 from folium.plugins import MarkerCluster
 
+from model import assign_severity
+
 base_path = "/app/"
 csv_path = os.path.join(base_path, "Competition_Dataset.csv")
+
+def severity_to_color(severity):
+    """
+    Returns a color for each severity level.
+    You can use discrete named colors (e.g., 'red', 'green')
+    or hex codes for a smoother gradient.
+    """
+    color_map = {
+        1: "#ffffb2", 
+        2: "#fed976",
+        3: "#feb24c",
+        4: "#fd8d3c",
+        5: "#f03b20",  
+    }
+    return color_map.get(severity, "#808080")
+
 
 def create_geo_map():
     df = pd.read_csv(csv_path)
