@@ -1,8 +1,8 @@
-streamlit
+streamlit>=1.2
 pandas
 matplotlib
 seaborn
 folium
 scikit-learn
 PyPDF2
-streamlit-aggrid
+streamlit-aggrid>=0.3.3
