@@ -28,29 +28,32 @@ def create_geo_map():
         print("No valid rows. Nothing to display.")
         return "<h3>No valid data for the map.</h3>"
 
-    # Create the base map centered at the median coordinates
+    # Create the base map
     sanfran_map = folium.Map(
         location=[df["latitude (y)"].median(), df["longitude (x)"].median()],
         zoom_start=12,
         tiles="CartoDB positron"
     )
 
-    # Add MiniMap for context and MeasureControl for distance measuring
+    # Add MiniMap and MeasureControl
     sanfran_map.add_child(MiniMap())
     sanfran_map.add_child(MeasureControl())
 
     lat_col = "latitude (y)"
     lon_col = "longitude (x)"
 
-    # Toggle markers by categories as separate parts in the layer control
+
     if "category" in df.columns:
         categories = df["category"].unique()
-        category_clusters = {}
-        # MarkerCluster for each unique category
+        category_groups = {}
         for cat in categories:
-            category_clusters[cat] = MarkerCluster(name=f"{cat} Incidents")
+
+            group = folium.FeatureGroup(name=f"{cat} Incidents", show=False)
+            marker_cluster = MarkerCluster().add_to(group)
+            category_groups[cat] = marker_cluster
+            sanfran_map.add_child(group)
         
-        # Markers to their corresponding category MarkerCluster
+
         for _, row in df.iterrows():
             lat = row[lat_col]
             lng = row[lon_col]
@@ -67,12 +70,12 @@ def create_geo_map():
                 popup=folium.Popup(popup_html, max_width=200),
                 tooltip=cat,
                 icon=folium.Icon(color="red", icon="info-sign")
-            ).add_to(category_clusters[cat])
-        
-        for cluster in category_clusters.values():
-            sanfran_map.add_child(cluster)
+            ).add_to(category_groups[cat])
     else:
-        incidents = MarkerCluster(name="Incidents").add_to(sanfran_map)
+
+        group = folium.FeatureGroup(name="Incidents", show=False)
+        marker_cluster = MarkerCluster().add_to(group)
+        sanfran_map.add_child(group)
         for lat, lng in zip(df[lat_col], df[lon_col]):
             popup_html = f"""
             <div style="width:150px;">
@@ -86,14 +89,15 @@ def create_geo_map():
                 popup=folium.Popup(popup_html, max_width=200),
                 tooltip="Crime",
                 icon=folium.Icon(color="red", icon="info-sign")
-            ).add_to(incidents)
+            ).add_to(marker_cluster)
 
-    # HeatMap layer for overall density visualization 
+    
     heat_data = [[row[lat_col], row[lon_col]] for _, row in df.iterrows()]
-    HeatMap(heat_data, radius=15, name="Crime Heatmap").add_to(sanfran_map)
+    heat_group = folium.FeatureGroup(name="Crime Heatmap", show=False)
+    HeatMap(heat_data, radius=15).add_to(heat_group)
+    sanfran_map.add_child(heat_group)
 
-    # Layer control (expanded checklist) to toggle category layers and the HeatMap
+
     folium.LayerControl(collapsed=False).add_to(sanfran_map)
 
     return sanfran_map._repr_html_()
-
