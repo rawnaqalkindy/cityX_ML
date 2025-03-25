@@ -9,6 +9,17 @@ from model import assign_severity
 base_path = "/app/"
 csv_path = os.path.join(base_path, "Competition_Dataset.csv")
 
+def severity_to_icon_color(severity):
+    
+    color_map = {
+        1: "green",
+        2: "blue",
+        3: "orange",
+        4: "red",
+        5: "darkred"
+    }
+    return color_map.get(severity, "gray")
+
 def severity_to_color(severity):
     """
     Returns a color for each severity level.
@@ -72,18 +83,21 @@ def create_geo_map():
     for lat, lng, category in zip(df[lat_col], df[lon_col], labels):
 
         sev = assign_severity(category)
-        color_hex = severity_to_color(sev)
+        icon_color = severity_to_icon_color(sev)
+        bg_color = severity_to_background_color(sev)
 
+        popup_html = f"""
+        <div style="background-color:{bg_color}; color:white; padding:5px; border-radius:4px;">
+            <strong>{category}</strong> (Severity {sev})
+        </div>
+        """
+        popup = folium.Popup(popup_html, max_width=200)
 
-        folium.CircleMarker(
+ 
+        folium.Marker(
             location=[lat, lng],
-            radius=5,                   # marker size
-            popup=f"{category} (Severity {sev})",
-            color=color_hex,            # outline color
-            fill=True,
-            fill_color=color_hex,       # fill color
-            fill_opacity=0.8
+            popup=popup,
+            icon=folium.Icon(color=icon_color, icon='info-sign') 
         ).add_to(incidents)
-
 
     return sanfran_map._repr_html_()
