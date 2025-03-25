@@ -63,11 +63,8 @@ def create_geo_map():
         sev = assign_severity(category)
         icon_color = severity_to_icon_color(sev)
 
-        popup = folium.Popup(popup_html, max_width=200)
-
         folium.Marker(
             location=[lat, lng],
-            popup=popup,
             icon=folium.Icon(color=icon_color, icon='info-sign') 
         ).add_to(incidents)
 
