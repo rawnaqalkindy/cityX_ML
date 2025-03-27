@@ -45,10 +45,18 @@ elif section == "Level 4: Report Classification":
                     "predicted_severity"
                 ]].copy()   
 
+                # Rename the columns to new titles
+                df_display.rename(columns={
+                    "file": "File Number",
+                    "report_number": "Report Number",
+                    "detailed_description": "Description",
+                    "predicted_category": "Predicted Category",
+                    "predicted_severity": "Predicted Severity"
+                }, inplace=True)
 
                 # Convert severity to numeric
-                df_display["predicted_severity"] = pd.to_numeric(
-                    df_display["predicted_severity"], errors="coerce"
+                df_display["Predicted Severity"] = pd.to_numeric(
+                    df_display["Predicted Severity"], errors="coerce"
                 )
                 gb = GridOptionsBuilder.from_dataframe(df_display)
 
@@ -59,22 +67,13 @@ elif section == "Level 4: Report Classification":
                     sortable=False
                 )
 
-                # gb.configure_column("file", sortable=True)
-                # gb.configure_column("report_number", sortable=True)
-                gb.configure_column("predicted_severity", sortable=True)
+
+                gb.configure_column("Predicted Severity", sortable=True)
                 gb.configure_pagination(paginationAutoPageSize=True)
                 gb.configure_side_bar()
 
                 grid_options = gb.build()
 
-                # Rename the columns to new titles
-                df_display.rename(columns={
-                    "file": "File Number",
-                    "report_number": "Report Number",
-                    "detailed_description": "Description",
-                    "predicted_category": "Predicted Category",
-                    "predicted_severity": "Predicted Severity"
-                }, inplace=True)
 
                 AgGrid(
                     df_display,
