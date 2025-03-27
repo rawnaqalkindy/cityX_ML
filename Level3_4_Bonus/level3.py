@@ -34,7 +34,16 @@ def create_map():
         location=[df["latitude (y)"].median(), df["longitude (x)"].median()],
         zoom_start=12,
         tiles="CartoDB positron"
+        control_scale=True
     )
+    
+    folium.TileLayer(
+        tiles='https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+        attr='Esri',
+        name='Esri Satellite',
+        overlay=False,
+        control=True
+    ).add_to(sanfran_map)
 
     # MiniMap for context
     sanfran_map.add_child(MiniMap())
@@ -73,6 +82,6 @@ def create_map():
     HeatMap(heat_map, radius=15, name="Crime Heatmap").add_to(sanfran_map)
 
     # Layer control for toggling map layers
-    folium.LayerControl().add_to(sanfran_map)
+    folium.LayerControl(collapsed=False).add_to(sanfran_map)
 
     return sanfran_map._repr_html_()
