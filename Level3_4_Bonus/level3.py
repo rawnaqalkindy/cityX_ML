@@ -62,10 +62,11 @@ def create_map():
         labels = ["Crime" for _ in range(len(df))]
 
     # Created markers with pop up info
-    for lat, lon, label in zip(df[lat_column], df[lon_column], labels):
+    for lat, lon, label, incident_date in zip(df[lat_column], df[lon_column], labels, df['dates']):
         popup_info = f"""
         <div style="width:150px;">
           <strong>{label}</strong><br>
+          Date: {incident_date}<br>
           Lat: {lat:.4f}<br>
           Lon: {lon:.4f}
         </div>
