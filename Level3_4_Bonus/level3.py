@@ -107,10 +107,18 @@ def create_map():
         'features': features
     }
 
+    # Debug: Print GeoJSON structure
+    print("GeoJSON Data:")
+    print(json.dumps(geojson, indent=2))
+
     styledict = {}
     for i, feature in enumerate(features):
         time_str = feature['properties']['times'][0]
         styledict[str(i)] = {time_str: {'color': 'red', 'opacity': 0.7}}
+
+    # Debug: Print styledict
+    print("Styledict:")
+    print(json.dumps(styledict, indent=2))
 
     TimeSliderChoropleth(
         data=json.dumps(geojson),
@@ -122,3 +130,4 @@ def create_map():
     folium.LayerControl(collapsed=False).add_to(sanfran_map)
 
     return sanfran_map._repr_html_()
+
