@@ -18,7 +18,7 @@ vectorizer, model, label_encoder = load_and_train_model()
 if section == "Level 3: Geo-Spatial Mapping":
     with st.spinner("Loading Map..."):
         st.header("Interactive Crime Map")
-        map_html = level3.create_geo_map()
+        map_html = level3.create_map()
         st.components.v1.html(map_html, height=600, scrolling=True)
 
 elif section == "Level 4: Report Classification":
