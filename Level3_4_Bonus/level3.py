@@ -33,10 +33,10 @@ def create_map():
     sanfran_map = folium.Map(
         location=[df["latitude (y)"].median(), df["longitude (x)"].median()],
         zoom_start=12,
-        tiles="CartoDB positron"
+        tiles="CartoDB positron",
         control_scale=True
     )
-    
+
     folium.TileLayer(
         tiles='https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
         attr='Esri',
