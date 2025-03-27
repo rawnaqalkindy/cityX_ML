@@ -5,8 +5,40 @@ import level3
 import level4
 from st_aggrid import AgGrid, GridOptionsBuilder, GridUpdateMode, DataReturnMode
 
+# Page configuration and custom styling
 st.set_page_config(page_title="CityX Crime Dashboard", layout="wide")
+
+# Custom CSS 
+st.markdown(
+    """
+    <style>
+    /* General body background and text */
+    body {
+        background-color: #f9f9f9;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    /* Header styles */
+    h1, h2, h3, h4, h5, h6 {
+        color: #003366;
+    }
+    /* Sidebar styling */
+    .css-1d391kg {  /* This class name might change depending on Streamlit version */
+        background-color: #e6f2ff;
+    }
+    /* KPI Metric styles */
+    .stMetric {
+        font-size: 1.5rem;
+        font-weight: 600;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
+st.image("https://via.placeholder.com/1200x200.png?text=CityX+Crime+Dashboard", use_column_width=True)
 st.sidebar.title("CityX Crime Dashboard")
+st.sidebar.markdown("Welcome to the CityX Crime Dashboard. Use the options below to explore geo-spatial data and police report classifications.")
+
 section = st.sidebar.radio(
     "Choose a Section",
     ["Level 3: Geo-Spatial Mapping", "Level 4: Report Classification"]
@@ -52,7 +84,7 @@ elif section == "Level 4: Report Classification":
                 selected_categories = st.multiselect("Filter by Category", unique_categories, default=unique_categories)
                 filtered_df = df_reports[df_reports["predicted_category"].isin(selected_categories)]
                 
-                # Tabbed Layout 
+                # Tabbed Layout of detailed view
                 tab = st.tabs(["Detailed View"])
                 with tab[0]:
                     df_display = filtered_df[[
@@ -100,10 +132,19 @@ elif section == "Level 4: Report Classification":
                         theme="streamlit",
                         enable_enterprise_modules=False
                     )
-
+                    
+                    # Download button for the filtered data
+                    csv = df_display.to_csv(index=False).encode('utf-8')
+                    st.download_button(
+                        label="Download data as CSV",
+                        data=csv,
+                        file_name='filtered_reports.csv',
+                        mime='text/csv',
+                    )
 
             else:
                 st.write("No detailed descriptions found in the extracted reports.")
         else:
             st.write("Extraction did not produce any 'detailed_description' field.")
+
 
