@@ -44,7 +44,7 @@ elif section == "Level 4: Report Classification":
                 
                 col1, col2, col3 = st.columns(3)
                 col1.metric("Total Reports", total_reports)
-                col2.metric("Avg. Severity", f"{avg_severity:.2f}")
+                col2.metric("Avg. Severity", f"{avg_severity:.2f} / 5")
                 col3.metric("Most Common Category", common_category)
                 
                 # Interactive Filters
@@ -56,13 +56,13 @@ elif section == "Level 4: Report Classification":
                 tab1, tab2 = st.tabs(["Summary", "Detailed View"])
                 with tab1:
                     st.subheader("Overview")
-                    st.write("This summary shows overall statistics for the filtered reports.")
-                    st.metric("Total Reports (Filtered)", len(filtered_df))
+                    st.write("Overall statstics of the reports")
+                    st.metric("Total Reports ", len(filtered_df))
                     if len(filtered_df) > 0:
                         avg_filtered_severity = filtered_df["predicted_severity"].astype(float).mean()
-                        st.metric("Avg. Severity (Filtered)", f"{avg_filtered_severity:.2f}")
+                        st.metric("Avg. Severity ", f"{avg_filtered_severity:.2f}")
                     else:
-                        st.metric("Avg. Severity (Filtered)", "N/A")
+                        st.metric("Avg. Severity ", "N/A")
                 with tab2:
                     df_display = filtered_df[[
                         "file", 
