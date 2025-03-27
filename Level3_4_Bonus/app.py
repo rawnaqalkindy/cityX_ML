@@ -35,7 +35,6 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-st.image("https://via.placeholder.com/1200x200.png?text=CityX+Crime+Dashboard", use_column_width=True)
 st.sidebar.title("CityX Crime Dashboard")
 st.sidebar.markdown("Welcome to the CityX Crime Dashboard. Use the options below to explore geo-spatial data and police report classifications.")
 
