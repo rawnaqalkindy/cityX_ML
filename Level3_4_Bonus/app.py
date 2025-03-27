@@ -24,7 +24,7 @@ if section == "Level 3: Geo-Spatial Mapping":
 elif section == "Level 4: Report Classification":
     with st.spinner("Loading Report..."):
         st.header("Police Report Classification")
-        df_reports = level4.process_police_reports()
+        df_reports = level4.process_reports()
         
         if 'detailed_description' in df_reports.columns:
             descriptions = df_reports["detailed_description"].tolist()
@@ -43,7 +43,16 @@ elif section == "Level 4: Report Classification":
                     "detailed_description", 
                     "predicted_category", 
                     "predicted_severity"
-                ]].copy()
+                ]].copy()   
+
+                # Rename the columns to new titles
+                df_display.rename(columns={
+                    "file": "File Number",
+                    "report_number": "Report Number",
+                    "detailed_description": "Description",
+                    "predicted_category": "Predicted Category",
+                    "predicted_severity": "Predicted Severity"
+                }, inplace=True)
 
                 # Convert severity to numeric
                 df_display["predicted_severity"] = pd.to_numeric(
@@ -58,14 +67,10 @@ elif section == "Level 4: Report Classification":
                     sortable=False
                 )
 
-                # gb.configure_column("file", sortable=True)
-                # gb.configure_column("report_number", sortable=True)
                 gb.configure_column("predicted_severity", sortable=True)
                 gb.configure_pagination(paginationAutoPageSize=True)
                 gb.configure_side_bar()
-
                 grid_options = gb.build()
-
 
                 AgGrid(
                     df_display,

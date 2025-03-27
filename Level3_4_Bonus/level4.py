@@ -7,7 +7,8 @@ from model import assign_severity
 
 base_path = "/app/police_reports"
 
-def extract_text_from_pdf(file_path):
+# Extracting the text from pdf reports
+def extract_text(file_path):
     text = ""
     try:
         with open(file_path, "rb") as f:
@@ -15,10 +16,11 @@ def extract_text_from_pdf(file_path):
             for page in reader.pages:
                 text += page.extract_text() + "\n"
     except Exception as e:
-        print(f"Error reading {file_path}: {e}")
+        print(f"Error in reading file")
     return text
 
-def parse_police_report(text):
+# Parses the police reports and finds+stores matches
+def parse_report(text):
     patterns = {
         "report_number": r"Report Number:\s*([^\n]+)",
         "date_time": r"Date & Time:\s*([^\n]+)",
@@ -37,7 +39,7 @@ def parse_police_report(text):
         data[key] = match.group(1).strip() if match else ""
     return data
 
-def process_police_reports():
+def process_reports():
     pdf_files = [
         os.path.join(base_path, "police_crime_report_1.pdf"),
         os.path.join(base_path, "police_crime_report_2.pdf"),
@@ -53,8 +55,8 @@ def process_police_reports():
     reports = []
     for pdf in pdf_files:
         if os.path.exists(pdf):
-            text = extract_text_from_pdf(pdf)
-            report_data = parse_police_report(text)
+            text = extract_text(pdf)
+            report_data = parse_report(text)
             file_name = os.path.basename(pdf)
             number_match = re.search(r"(\d+)\.pdf$", file_name)     # Extracting the number of the file
             if number_match:
