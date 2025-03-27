@@ -2,6 +2,8 @@ import os
 import pandas as pd
 import folium
 from folium.plugins import MarkerCluster, HeatMap, MiniMap, MeasureControl
+from folium.plugins import TimeSliderChoropleth
+import json
 
 base_path = "/app/"
 csv_path = os.path.join(base_path, "Competition_Dataset.csv")
@@ -81,6 +83,40 @@ def create_map():
     # HeatMap layer to visualize concentration
     heat_map = [[row[lat_column], row[lon_column]] for _, row in df.iterrows()]
     HeatMap(heat_map, radius=15, name="Crime Heatmap").add_to(sanfran_map)
+
+    # TimeSliderChoropleth plugin to showcase a slider for incident dates
+    features = []
+    for idx, row in df.iterrows():
+        dt = pd.to_datetime(row['dates'])
+        timestamp = dt.strftime('%Y-%m-%dT%H:%M:%S')
+        feature = {
+            'type': 'Feature',
+            'properties': {
+                'times': [timestamp],
+                'popup': f"{row['category']}<br>Date: {row['dates']}<br>Lat: {row[lat_column]:.4f}<br>Lon: {row[lon_column]:.4f}"
+            },
+            'geometry': {
+                'type': 'Point',
+                'coordinates': [row[lon_column], row[lat_column]]
+            }
+        }
+        features.append(feature)
+
+    geojson = {
+        'type': 'FeatureCollection',
+        'features': features
+    }
+
+    styledict = {}
+    for i, feature in enumerate(features):
+        time_str = feature['properties']['times'][0]
+        styledict[str(i)] = {time_str: {'color': 'red', 'opacity': 0.7}}
+
+    TimeSliderChoropleth(
+        data=json.dumps(geojson),
+        styledict=styledict,
+        name="Time Slider"
+    ).add_to(sanfran_map)
 
     # Layer control for toggling map layers
     folium.LayerControl(collapsed=False).add_to(sanfran_map)
