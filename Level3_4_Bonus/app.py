@@ -52,26 +52,17 @@ elif section == "Level 4: Report Classification":
                 selected_categories = st.multiselect("Filter by Category", unique_categories, default=unique_categories)
                 filtered_df = df_reports[df_reports["predicted_category"].isin(selected_categories)]
                 
-                # Tabbed Layout for Summary and Detailed Table
-                tab1, tab2 = st.tabs(["Summary", "Detailed View"])
-                with tab1:
-                    st.subheader("Overview")
-                    st.write("Overall statstics of the reports")
-                    st.metric("Total Reports ", len(filtered_df))
-                    if len(filtered_df) > 0:
-                        avg_filtered_severity = filtered_df["predicted_severity"].astype(float).mean()
-                        st.metric("Avg. Severity ", f"{avg_filtered_severity:.2f}")
-                    else:
-                        st.metric("Avg. Severity ", "N/A")
-                with tab2:
+                # Tabbed Layout 
+                tab = st.tabs(["Detailed View"])
+                with tab[0]:
                     df_display = filtered_df[[
                         "file", 
                         "report_number", 
                         "detailed_description", 
                         "predicted_category", 
                         "predicted_severity"
-                    ]].copy()   
-
+                    ]].copy()
+                    
                     # Rename the columns to new titles
                     df_display.rename(columns={
                         "file": "File Number",
@@ -109,6 +100,7 @@ elif section == "Level 4: Report Classification":
                         theme="streamlit",
                         enable_enterprise_modules=False
                     )
+
 
             else:
                 st.write("No detailed descriptions found in the extracted reports.")
