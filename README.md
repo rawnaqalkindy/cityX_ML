@@ -1,4 +1,4 @@
-# cityX_ML
+# Machine Learning Project
 
 Level1_2 Folder: Responsible for combined level 1 and 2 code on jupyter notebook with visualization.
 
